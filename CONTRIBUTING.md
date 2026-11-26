@@ -1,68 +1,88 @@
-# Contribution Guidelines
+# Contributing to S.O.S.
 
-## Branching Strategy
+## 1. Branching Strategy
 
-- `main`: Stable project versions.
-- `develop`: Integration and development branch.
-- `feature/environment`: Environment and visualization.
-- `feature/policy-iteration`: MDP and Policy Iteration.
-- `feature/q-learning`: Q-Learning implementation.
-- `feature/reinforce`: REINFORCE implementation.
-- `feature/evaluation`: Training, evaluation, and integration.
+The project uses a personal branch workflow. Each team member works on their assigned branch and submits changes to `main` through Pull Requests.
 
-## Development Workflow
+| Team Member | Assigned Branch |
+|---|---|
+| Menna Abdo | `menna-abdo` |
+| Maryam | `maryam` |
+| Mennatullah | `mennatullah` |
+| Menna Osama | `menna-osama` |
+| Catherine | `catherine` |
 
-1. Select an assigned GitHub Issue.
-2. Switch to your assigned feature branch.
-3. Synchronize your branch with `develop`.
-4. Implement the assigned task.
-5. Write or update relevant tests.
-6. Run the automated test suite.
-7. Commit your changes with a descriptive message.
-8. Push your feature branch.
-9. Open a Pull Request targeting `develop`.
-10. Request a review from the assigned reviewer.
-11. Resolve review comments before merging.
-12. Update `CONTRIBUTIONS.md`.
+The `main` branch represents the stable and integrated version of the project.
 
-## Coding Guidelines
+## 2. Development Workflow
 
-- Follow consistent Python naming conventions.
-- Write readable and modular code.
-- Document important functions and classes.
-- Follow the agreed shared interfaces.
-- Avoid modifying unrelated files.
-- Implement the required RL algorithms from scratch.
-- Use shared environment settings for fair comparison.
+Before starting a task, switch to your assigned branch and synchronize it with the latest version of `main`.
 
-## Testing Guidelines
+```bash
+git switch YOUR-BRANCH
+git pull origin YOUR-BRANCH
+git fetch origin
+git merge origin/main
+```
 
-Run all tests before submitting a Pull Request:
+Implement your assigned task and add the necessary tests.
+
+Run all tests locally:
 
 ```bash
 python -m pytest -v
 ```
 
-Every implemented feature should include relevant tests.
+Stage, commit, and push your changes:
 
-## Commit Message Convention
+```bash
+git add <changed-files>
+git commit -m "Describe the implemented task"
+git push origin YOUR-BRANCH
+```
 
-Examples:
+## 3. Pull Request Requirements
 
-- `feat: implement gridworld movement`
-- `fix: correct terminal state handling`
-- `test: add Q-learning update tests`
-- `docs: update environment design`
-- `refactor: improve state encoding`
+Create a Pull Request with:
 
-## Pull Request Rules
+- Base branch: `main`
+- Compare branch: your personal branch
+- A clear description of the implemented changes
+- Related issue number
+- Testing results
+- Documentation updates, if applicable
 
-- Do not push directly to `main` or `develop` after initial setup.
-- Every feature must be reviewed before merging.
-- Automated tests must pass.
-- Changes must be related to the assigned task.
-- Shared interface changes must be discussed with the team.
+## 4. Testing and Code Review
 
-## Contribution Tracking
+Before merging a Pull Request:
 
-Every member must document their design, implementation, testing, analysis, and documentation contributions in `CONTRIBUTIONS.md`.
+- All automated GitHub Actions tests must pass.
+- At least one other team member must approve the changes.
+- All merge conflicts must be resolved.
+- All review comments must be addressed.
+- The contribution log must be updated.
+
+If any check fails, fix the issue on your personal branch and push the updated changes.
+
+## 5. Merge Policy
+
+- Direct pushes to `main` are not allowed during team development.
+- Changes must be integrated through approved Pull Requests.
+- Personal branches must not be deleted after merging.
+- Use merge commits to preserve contribution history.
+- Synchronize your personal branch with `main` after merging.
+
+## 6. Code Quality
+
+- Write clean, readable, and modular Python code.
+- Follow the agreed project interfaces.
+- Add meaningful comments and docstrings.
+- Implement unit tests for new functionality.
+- Do not modify unrelated files.
+- Do not commit virtual environments, caches, or sensitive information.
+
+## 7. Team Responsibilities
+
+Every team member must participate in design, implementation, testing, analysis, documentation, and the final presentation.
+
+Record all contributions in `CONTRIBUTIONS.md`.

@@ -1,47 +1,43 @@
-# Team Contributions
+# S.O.S. — Team Contributions
 
 ## Team Members
 
-| Member | Name | Primary Responsibility | Branch |
+| ID | Team Member | Personal Branch | Primary Responsibility |
 |---|---|---|---|
-| Student 1 | TBD | Environment and Visualization | feature/environment |
-| Student 2 | TBD | MDP and Policy Iteration | feature/policy-iteration |
-| Student 3 | TBD | Q-Learning | feature/q-learning |
-| Student 4 | TBD | REINFORCE | feature/reinforce |
-| Student 5 | TBD | Training, Evaluation and Integration | feature/evaluation |
+| S01 | Menna Abdo | `menna-abdo` | TBD |
+| S02 | Maryam | `maryam` | TBD |
+| S03 | Mennatullah | `mennatullah` | TBD |
+| S04 | Menna Osama | `menna-osama` | TBD |
+| S05 | Catherine | `catherine` | TBD |
 
 ## Contribution Log
 
-| Date | Member | Activity Type | Task Description | Evidence (Issue, Commit or PR) | Status |
+Each team member must record their contributions throughout the project.
+
+| Date | Member | Activity Type | Task Description | Evidence / PR / Commit | Status |
 |---|---|---|---|---|---|
-| YYYY-MM-DD | Student X | Design / Implementation / Testing / Analysis / Documentation | Task description | Reference | Pending |
+| YYYY-MM-DD | Member name | Design / Implementation / Testing / Analysis / Documentation / Presentation | Task description | Link or commit ID | Pending |
 
-## Peer Review Assignments
+## Code Review Log
 
-| Contributor | Assigned Reviewer |
-|---|---|
-| Student 1 | Student 2 |
-| Student 2 | Student 3 |
-| Student 3 | Student 4 |
-| Student 4 | Student 5 |
-| Student 5 | Student 1 |
-
-## Peer Review Log
-
-| Date | Reviewer | Pull Request | Feedback | Status |
+| Date | Pull Request | Author | Reviewer | Review Outcome |
 |---|---|---|---|---|
-| YYYY-MM-DD | Student X | PR reference | Review comments | Pending |
+| YYYY-MM-DD | PR number | Member name | Reviewer name | Pending |
 
-## Shared Responsibilities
+## Participation Tracking
 
-All team members are expected to contribute to:
+| Member | Design | Implementation | Testing | Analysis | Documentation | Presentation |
+|---|---|---|---|---|---|---|
+| Menna Abdo | Pending | Pending | Pending | Pending | Pending | Pending |
+| Maryam | Pending | Pending | Pending | Pending | Pending | Pending |
+| Mennatullah | Pending | Pending | Pending | Pending | Pending | Pending |
+| Menna Osama | Pending | Pending | Pending | Pending | Pending | Pending |
+| Catherine | Pending | Pending | Pending | Pending | Pending | Pending |
 
-- Project and environment design.
-- Algorithm implementation and integration.
-- Unit and integration testing.
-- Experimental evaluation.
-- Results analysis and interpretation.
-- Final report preparation.
-- Presentation and project discussion.
+## Contribution Guidelines
 
-Contribution records must be updated throughout the project using actual GitHub evidence.
+- Update this file whenever a task is completed.
+- Include evidence through GitHub Issues, commits, or Pull Requests.
+- Record testing and code review activities.
+- Ensure every member participates in all required project phases.
+- All members must understand the complete project before the final discussion.

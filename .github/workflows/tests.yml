@@ -4,13 +4,15 @@ on:
   push:
     branches:
       - main
-      - develop
-      - "feature/**"
+      - menna-abdo
+      - maryam
+      - mennatullah
+      - menna-osama
+      - catherine
 
   pull_request:
     branches:
       - main
-      - develop
 
 permissions:
   contents: read
