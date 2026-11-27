@@ -275,3 +275,58 @@ env.close()
 - Q-Learning and REINFORCE must learn through actual environment interactions.
 - Unreachable states must not be included in gameplay performance statistics.
 - State IDs must not be renumbered or compressed independently.
+
+## Agent Implementation Contract
+
+### Agent Classes
+
+| Algorithm | Module | Class |
+|---|---|---|
+| Policy Iteration | `agents.policy_iteration` | `PolicyIterationAgent` |
+| Q-Learning | `agents.q_learning` | `QLearningAgent` |
+| REINFORCE | `agents.reinforce` | `ReinforceAgent` |
+
+### Constructor Parameters
+
+All agents must inherit from `BaseAgent` and accept the following keyword arguments:
+
+- `n_states`
+- `n_actions`
+- `gamma`
+- `seed`
+
+Algorithm-specific constructor parameters:
+
+- Policy Iteration: `theta`, `max_eval_sweeps`, `max_policy_iterations`.
+- Q-Learning: `learning_rate`, `epsilon_start`, `epsilon_min`, `epsilon_decay`.
+- REINFORCE: `learning_rate`.
+
+Default values must come from `config.py`.
+
+### Training Contract
+
+- Policy Iteration: `train(env, **kwargs)`.
+- Q-Learning: `train(env, episodes=TRAIN_EPISODES, **kwargs)`.
+- REINFORCE: `train(env, episodes=TRAIN_EPISODES, **kwargs)`.
+- All agents return a list of dictionaries following the shared training-log schema.
+- Each independent training run must use a newly initialized agent.
+- Agents must not modify shared environment rules.
+
+### Action Selection
+
+- `select_action(state, deterministic=True)` returns an integer action ID.
+- Policy Iteration returns the action defined by its learned policy.
+- Q-Learning uses greedy selection when deterministic and epsilon-greedy selection otherwise.
+- REINFORCE uses greedy selection when deterministic and Softmax sampling otherwise.
+- Greedy ties are resolved using the smallest action ID.
+- Action selection must not update learned parameters.
+- Q-Learning epsilon decay occurs once after each training episode.
+
+### Model Persistence
+
+- Policy Iteration saves its policy and value function.
+- Q-Learning saves its Q-table.
+- REINFORCE saves its policy parameters.
+- All agents use the agreed `.npz` model format.
+- Loading must restore deterministic action-selection behavior.
+- Model dimensions must be validated during loading.

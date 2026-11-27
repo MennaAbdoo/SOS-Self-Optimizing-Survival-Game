@@ -53,6 +53,8 @@ EVALUATION_EPISODES = 100
 
 # Policy Iteration defaults
 PI_THETA = 1e-8
+PI_MAX_EVAL_SWEEPS = 1000
+PI_MAX_POLICY_ITERATIONS = 100
 
 # Q-Learning defaults
 Q_LEARNING_RATE = 0.1
