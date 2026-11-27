@@ -8,7 +8,7 @@
 |---|---|
 | `reset(seed=None)` | `state, info` |
 | `step(action)` | `next_state, reward, terminated, truncated, info` |
-| `render()` | Environment visualization |
+| `render()` | Boolean indicating whether the demo should continue |
 | `close()` | Release resources |
 
 - States are encoded integers (0–391).
@@ -128,7 +128,8 @@ Each evaluation episode must record:
 - Evaluation must not update learned parameters.
 - True terminal transitions must not bootstrap future values.
 - Truncation must be distinguished from termination.
-- Rendering must be disabled during training and automated testing.
+- Rendering must be disabled during training and performance evaluation.
+- Visualization tests may use a headless Pygame driver.
 - Interface changes require team agreement.
 
 ## GridWorld Implementation Details
@@ -232,11 +233,49 @@ Models must contain the parameters required to reproduce the learned policy. Loa
 
 ## Visualization Contract
 
-- Visualization is implemented separately in `environment/visualization.py`.
-- The renderer class is `GridWorldRenderer`.
-- The renderer exposes `render(env)` and `close()`.
-- Rendering must not modify environment state or learning parameters.
-- Training and performance evaluation must run without rendering.
+Student 3 implements `GridWorldRenderer` in `environment/visualization.py`.
+
+### Environment Configuration
+
+```python
+env = GridWorldEnv(
+    render_mode="human",
+    algorithm_name="Q-Learning",
+    render_fps=5,
+)
+```
+
+### Renderer Interface
+
+- `GridWorldRenderer()`: initializes the renderer.
+- `render(env) -> bool`: renders the current environment state.
+- Return `True` while the window remains active.
+- Return `False` when the user requests window closure.
+- `close()`: releases graphical resources safely.
+
+### Available Environment Attributes
+
+| Attribute | Purpose |
+|---|---|
+| `state` | Encoded robot state |
+| `algorithm_name` | Displayed algorithm name |
+| `render_fps` | Animation speed |
+| `step_count` | Current episode steps |
+| `cumulative_reward` | Total episode reward |
+| `hazard_encounters` | Hazard encounters |
+| `terminated` | Goal completion |
+| `truncated` | Episode time limit |
+
+Use the shared state decoder and map constants to render the robot, walls, hazards, batteries, and goal.
+
+### Integration Rules
+
+- Student 3 owns graphical rendering and window events.
+- Student 5 owns demonstration execution and replay.
+- Window closure stops the demonstration without changing environment termination flags.
+- Rendering must not modify environment state or learned parameters.
+- Training and performance evaluation must use `render_mode=None`.
+- Pygame must not be initialized during headless execution.
 
 ## Environment Usage Example
 

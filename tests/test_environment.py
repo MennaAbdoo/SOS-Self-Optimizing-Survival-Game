@@ -248,3 +248,42 @@ def test_all_walkable_cells_remain_reachable():
     reachable = get_reachable_positions()
 
     assert len(reachable) == GRID_SIZE ** 2 - len(WALLS)
+
+def test_default_visualization_settings():
+    from config import DEFAULT_RENDER_FPS
+
+    env = GridWorldEnv()
+
+    assert env.render_mode is None
+    assert env.algorithm_name == "Demo"
+    assert env.render_fps == DEFAULT_RENDER_FPS
+
+    env.close()
+
+
+def test_custom_visualization_settings():
+    env = GridWorldEnv(
+        render_mode="human",
+        algorithm_name="Q-Learning",
+        render_fps=10,
+    )
+
+    assert env.algorithm_name == "Q-Learning"
+    assert env.render_fps == 10
+
+    env.close()
+
+
+def test_headless_render():
+    env = GridWorldEnv(render_mode=None)
+    env.reset()
+
+    assert env.render() is True
+    assert env._renderer is None
+
+    env.close()
+
+
+def test_invalid_render_fps():
+    with pytest.raises(ValueError):
+        GridWorldEnv(render_fps=0)

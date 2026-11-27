@@ -17,6 +17,7 @@ from config import (
     HAZARD_PENALTY,
     COLLISION_PENALTY,
     STEP_REWARD,
+    DEFAULT_RENDER_FPS,
 )
 
 from environment.maps import BATTERIES, HAZARDS, is_walkable
@@ -79,20 +80,35 @@ def transition(state, action):
 class GridWorldEnv(gym.Env):
     """S.O.S. robot survival environment."""
 
-    metadata = {"render_modes": ["human"], "render_fps": 5}
+    metadata = {
+        "render_modes": ["human"],
+        "render_fps": DEFAULT_RENDER_FPS,
+    }
 
-    def __init__(self, render_mode=None):
+    def __init__(
+        self,
+        render_mode=None,
+        algorithm_name="Demo",
+        render_fps=DEFAULT_RENDER_FPS,
+    ):
         super().__init__()
 
         if render_mode not in (None, "human"):
             raise ValueError("Unsupported render mode.")
 
+        if render_fps <= 0:
+            raise ValueError("Render FPS must be positive.")
+
         self.observation_space = spaces.Discrete(NUM_STATES)
         self.action_space = spaces.Discrete(NUM_ACTIONS)
 
+        # Visualization settings
         self.render_mode = render_mode
+        self.algorithm_name = algorithm_name
+        self.render_fps = render_fps
         self._renderer = None
 
+        # Environment state and episode statistics
         self.state = encode_state(*START_POSITION, 0)
         self.step_count = 0
         self.cumulative_reward = 0
@@ -166,17 +182,17 @@ class GridWorldEnv(gym.Env):
         }
 
     def render(self):
-        """Render the environment."""
+        """Render the environment and report window status."""
 
         if self.render_mode is None:
-            return
+            return True
 
         from environment.visualization import GridWorldRenderer
 
         if self._renderer is None:
             self._renderer = GridWorldRenderer()
 
-        self._renderer.render(self)
+        return self._renderer.render(self)
 
     def close(self):
         """Release visualization resources."""

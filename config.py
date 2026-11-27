@@ -74,3 +74,12 @@ TRAINING_LOGS_DIR = RESULTS_DIR / "training_logs"
 EVALUATION_LOGS_DIR = RESULTS_DIR / "evaluation_logs"
 METRICS_DIR = RESULTS_DIR / "metrics"
 FIGURES_DIR = RESULTS_DIR / "figures"
+
+# Visualization defaults
+DEFAULT_RENDER_FPS = 5
+
+ALGORITHM_NAMES = {
+    "policy_iteration": "Policy Iteration",
+    "q_learning": "Q-Learning",
+    "reinforce": "REINFORCE",
+}
