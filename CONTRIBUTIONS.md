@@ -28,8 +28,6 @@
 | 2026-11-27 | Menna Abdo | Documentation | Shared logging schemas and experiment result contracts | `7c062a1` | Completed |
 | 2026-11-27 | Menna Abdo | Testing | Environment, state encoder, BaseAgent, and final validation tests — 84 tests passed | `4123602`, `7729ef9`, `0343c0d`, `197be1e` | Completed |
 | 2026-11-27 | Menna Abdo | Project Management | Alignment of all five issues with mandatory shared contracts | Issues #1–#5 | Completed |
-| — | Menna Abdo | Integration | Foundation review, merge, and team handover | Issue #1 | Pending |
-| — | Menna Abdo | Analysis | Final agent behavior and comparative results analysis | Issue #1 | Pending |
 | — | Menna Abdo | Documentation / Presentation | Final report and presentation contributions | Issue #1 | Pending |
 
 ## Code Review Log
