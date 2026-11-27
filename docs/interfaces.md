@@ -264,3 +264,14 @@ env.close()
 - Initialize the agent RNG once per independent run.
 - Final evaluation must not be used for hyperparameter selection.
 - Use one final experiment run per algorithm and seed to avoid overwriting result files.
+
+## State Space Usage
+
+- All agents must use `NUM_STATES = 392` and `NUM_ACTIONS = 4`.
+- State IDs must follow the shared encoder.
+- Wall states are invalid and must be excluded from MDP construction and policy updates.
+- Terminal states are absorbing with zero subsequent reward and zero future value.
+- Policy Iteration may include unreachable non-wall states in its transition model, but they must not be treated as reachable gameplay states.
+- Q-Learning and REINFORCE must learn through actual environment interactions.
+- Unreachable states must not be included in gameplay performance statistics.
+- State IDs must not be renumbered or compressed independently.

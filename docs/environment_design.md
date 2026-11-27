@@ -190,3 +190,23 @@ END WHILE
 ```
 
 The same deterministic transition function is shared by the environment and the MDP construction to ensure consistent game dynamics across all algorithms.
+
+## State Space Validation
+
+State reachability was verified using BFS over the encoded state space and the shared deterministic transition function.
+
+| State Category | Count |
+|---|---:|
+| Allocated state IDs | 392 |
+| Invalid wall states | 64 |
+| Non-wall state IDs | 328 |
+| Reachable states | 312 |
+| Unreachable non-wall states | 16 |
+| Reachable non-terminal states | 304 |
+| Reachable terminal states | 8 |
+
+All eight terminal battery masks are reachable.
+
+Reachability is calculated from the initial state without the external episode-length limit, and exploration stops at terminal states.
+
+The allocated state-space size remains 392 to preserve consistent indexing across all algorithms.
