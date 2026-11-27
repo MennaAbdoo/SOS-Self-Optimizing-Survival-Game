@@ -89,22 +89,38 @@ Map coordinates and reward values must remain consistent with `environment_desig
 
 ## 7. Training Logs
 
-Each algorithm must provide the following fields:
+All agents must return a list of dictionaries.
 
-- `algorithm`
-- `run_id`
-- `seed`
-- `progress_unit`
-- `progress_index`
-- `episode_reward`
-- `episode_steps`
-- `success`
-- `convergence_delta`
-- `training_time_seconds`
+### Common Fields
 
-Use `iteration` for Policy Iteration and `episode` for Q-Learning and REINFORCE.
+| Field | Description |
+|---|---|
+| `algorithm` | Algorithm identifier |
+| `run_id` | Unique experiment identifier |
+| `seed` | Experiment seed |
+| `progress_unit` | `iteration` or `episode` |
+| `progress_index` | Progress index starting at 1 |
+| `episode_reward` | Undiscounted episode reward |
+| `episode_steps` | Number of attempted actions |
+| `success` | Whether the goal was reached |
+| `convergence_delta` | Algorithm-specific convergence measure |
+| `training_time_seconds` | Cumulative training time |
 
-Non-applicable fields may be null.
+### Algorithm-Specific Fields
+
+| Field | Algorithm |
+|---|---|
+| `evaluation_sweeps` | Policy Iteration |
+| `policy_stable` | Policy Iteration |
+| `epsilon` | Q-Learning |
+| `mean_abs_td_error` | Q-Learning |
+| `policy_update_norm` | REINFORCE (optional) |
+
+- Policy Iteration records one entry per policy iteration.
+- Q-Learning and REINFORCE record one entry per training episode.
+- Non-applicable fields must be null, not zero.
+- The training pipeline assigns and validates experiment metadata.
+- Convergence measures must not be treated as equivalent across algorithms.
 
 ## 8. Evaluation Logs
 
@@ -173,7 +189,7 @@ env = GridWorldEnv(render_mode=None)
 ## Agent Initialization Contract
 
 - All reinforcement learning agents must inherit from `BaseAgent`.
-- Agents should accept `n_states`, `n_actions`, `gamma`, and `seed` as shared constructor parameters.
+- Agents must accept `n_states`, `n_actions`, `gamma`, and `seed` as shared constructor parameters.
 - Algorithm-specific hyperparameters are configurable independently.
 - `train(env, **kwargs)` returns training logs following the shared schema.
 - `select_action(state, deterministic=True)` returns an integer action ID.
@@ -183,6 +199,7 @@ env = GridWorldEnv(render_mode=None)
 ## Configuration Rules
 
 **Fixed across algorithms:**
+
 - Game map and initial state.
 - State and action spaces.
 - Reward system.
@@ -191,6 +208,7 @@ env = GridWorldEnv(render_mode=None)
 - Experiment seeds and evaluation protocol.
 
 **Independently configurable:**
+
 - Learning rates.
 - Exploration parameters.
 - Convergence thresholds.
@@ -198,23 +216,34 @@ env = GridWorldEnv(render_mode=None)
 
 ## Model Saving and Result Naming
 
-Algorithm identifiers:
+### Algorithm Identifiers
 
 - `policy_iteration`
 - `q_learning`
 - `reinforce`
 
-Use the following naming conventions:
+### Experiment Modes
 
-| Output | Filename |
+- `validation`: hyperparameter selection and development.
+- `final`: frozen configurations and final evaluation.
+
+Each experiment run must have a unique `run_id`.
+
+### Output Paths
+
+| Output | Path |
 |---|---|
-| Model | `{algorithm}_seed{seed}.npz` |
-| Training log | `{algorithm}_seed{seed}_training.csv` |
-| Evaluation log | `{algorithm}_seed{seed}_evaluation.csv` |
-| Metrics | `{algorithm}_metrics.csv` |
-| Figure | `{algorithm}_{metric}.png` |
+| Model | `results/models/{mode}/{run_id}/{algorithm}_seed{seed}.npz` |
+| Training log | `results/training_logs/{mode}/{run_id}/{algorithm}_seed{seed}_training.csv` |
+| Evaluation log | `results/evaluation_logs/{mode}/{run_id}/{algorithm}_seed{seed}_evaluation.csv` |
+| Configuration | `results/metrics/{mode}/{run_id}/config.json` |
+| Run metrics | `results/metrics/{mode}/{run_id}/{algorithm}_metrics.csv` |
+| Figures | `results/figures/{mode}/{run_id}/{algorithm}_{metric}.png` |
 
-Models must contain the parameters required to reproduce the learned policy. Loading a model must restore its action-selection behavior.
+- Student 5 manages result directories and experiment identifiers.
+- Existing experiment outputs must not be silently overwritten.
+- Validation and final evaluation results must remain separate.
+- Models must restore learned action-selection behavior.
 
 ## Reproducibility
 
@@ -275,7 +304,7 @@ Use the shared state decoder and map constants to render the robot, walls, hazar
 - Window closure stops the demonstration without changing environment termination flags.
 - Rendering must not modify environment state or learned parameters.
 - Training and performance evaluation must use `render_mode=None`.
-- Pygame must not be initialized during headless execution.
+- Pygame must not be initialized during headless training and evaluation.
 
 ## Environment Usage Example
 
@@ -293,16 +322,18 @@ done = terminated or truncated
 
 env.close()
 ```
+
 ## Logging Conventions
 
 - Training logs must be returned as a list of dictionaries.
 - Progress and episode indices start at 1.
 - Episode rewards represent undiscounted cumulative rewards.
 - Training time is cumulative and measured in seconds.
-- Non-applicable metrics must be recorded as null.
+- Non-applicable metrics must be recorded as null (`None` in Python).
 - Initialize the agent RNG once per independent run.
 - Final evaluation must not be used for hyperparameter selection.
-- Use one final experiment run per algorithm and seed to avoid overwriting result files.
+- Every independent experiment must have a unique `run_id`.
+- Final comparisons must use the predefined experiment seeds and frozen configurations.
 
 ## State Space Usage
 
@@ -369,3 +400,40 @@ Default values must come from `config.py`.
 - All agents use the agreed `.npz` model format.
 - Loading must restore deterministic action-selection behavior.
 - Model dimensions must be validated during loading.
+
+## Evaluation and Experiment Responsibilities
+
+### Students 2, 3, and 4
+
+- Implement their assigned algorithms.
+- Return training logs using the shared schema.
+- Save and load trained models.
+- Conduct validation experiments and freeze final hyperparameters.
+
+### Student 4 — Shared Metrics
+
+- Implement metric calculations in `evaluation/metrics.py`.
+- Calculate average reward, success rate, episode length, battery collection, hazard encounters, and variability.
+- Aggregate independent runs using mean and sample standard deviation.
+- Handle missing values and unsuccessful episodes correctly.
+
+### Student 5 — Experiment Pipeline
+
+- Manage training, evaluation, experiment identifiers, and result files.
+- Measure total training time consistently without rendering.
+- Use separate evaluation environments and deterministic action selection.
+- Generate comparative tables and plots using Student 4's metrics.
+- Keep Policy Iteration convergence plots separate from episode-based learning curves.
+
+### Shared Experiment Protocol
+
+- Discount factor: 0.9.
+- Independent seeds: 42, 43, 44, 45, 46.
+- Default training episodes: 5000 for Q-Learning and REINFORCE.
+- Validation episodes: 50 per run.
+- Final evaluation episodes: 100 per run.
+- Maximum episode length: 100 steps.
+- No parameter updates during evaluation.
+- Final evaluation must not be used for hyperparameter selection.
+
+The fixed deterministic environment may produce identical evaluation trajectories for a trained deterministic policy. This limitation must be reported.
