@@ -287,3 +287,69 @@ def test_headless_render():
 def test_invalid_render_fps():
     with pytest.raises(ValueError):
         GridWorldEnv(render_fps=0)
+
+def test_complete_successful_episode():
+    from config import DOWN, RIGHT
+    from environment.gridworld import GridWorldEnv
+
+    env = GridWorldEnv()
+    env.reset(seed=42)
+
+    actions = [
+        DOWN, DOWN, RIGHT, DOWN,
+        DOWN, RIGHT, RIGHT, DOWN,
+        RIGHT, RIGHT, RIGHT, DOWN
+    ]
+
+    total_reward = 0
+
+    for action in actions:
+        state, reward, terminated, truncated, info = env.step(action)
+        total_reward += reward
+
+    assert terminated is True
+    assert truncated is False
+    assert total_reward == 121
+    assert info["step_count"] == 12
+    assert info["batteries_collected"] == 2
+    assert info["hazard_encounters"] == 0
+    assert info["position"] == (6, 6)
+    assert info["success"] is True
+
+    env.close()
+
+
+def test_reachable_encoded_states():
+    from collections import deque
+    from config import NUM_ACTIONS, START_POSITION, GOAL_POSITION
+    from environment.gridworld import transition
+    from environment.state_encoder import encode_state, decode_state
+
+    initial_state = encode_state(*START_POSITION, 0)
+
+    visited = {initial_state}
+    queue = deque([initial_state])
+
+    while queue:
+        state = queue.popleft()
+
+        row, col, _ = decode_state(state)
+
+        if (row, col) == GOAL_POSITION:
+            continue
+
+        for action in range(NUM_ACTIONS):
+            next_state, _, _ = transition(state, action)
+
+            if next_state not in visited:
+                visited.add(next_state)
+                queue.append(next_state)
+
+    terminal_states = {
+        state for state in visited
+        if decode_state(state)[:2] == GOAL_POSITION
+    }
+
+    assert len(visited) == 312
+    assert len(terminal_states) == 8
+    assert len(visited - terminal_states) == 304
