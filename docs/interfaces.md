@@ -168,3 +168,29 @@ env = GridWorldEnv(render_mode=None)
 - Wall states are excluded from valid transitions.
 - Use `render_mode=None` during training and evaluation.
 - Use `render_mode="human"` for visualization.
+
+## Agent Initialization Contract
+
+- All reinforcement learning agents must inherit from `BaseAgent`.
+- Agents should accept `n_states`, `n_actions`, `gamma`, and `seed` as shared constructor parameters.
+- Algorithm-specific hyperparameters are configurable independently.
+- `train(env, **kwargs)` returns training logs following the shared schema.
+- `select_action(state, deterministic=True)` returns an integer action ID.
+- Deterministic action selection must not update learned parameters.
+- `save(path)` and `load(path)` use explicit model-file paths.
+
+## Configuration Rules
+
+**Fixed across algorithms:**
+- Game map and initial state.
+- State and action spaces.
+- Reward system.
+- Maximum episode length.
+- Discount factor.
+- Experiment seeds and evaluation protocol.
+
+**Independently configurable:**
+- Learning rates.
+- Exploration parameters.
+- Convergence thresholds.
+- Algorithm-specific training parameters.
