@@ -231,3 +231,20 @@ def test_down_movement(env):
 
     assert info["position"] == (1, 0)
     assert reward == STEP_REWARD
+
+def test_goal_is_not_expanded_in_reachability():
+    from environment.maps import get_reachable_positions
+    from config import GOAL_POSITION
+
+    assert get_reachable_positions(GOAL_POSITION) == {
+        GOAL_POSITION
+    }
+
+
+def test_all_walkable_cells_remain_reachable():
+    from environment.maps import get_reachable_positions, WALLS
+    from config import GRID_SIZE
+
+    reachable = get_reachable_positions()
+
+    assert len(reachable) == GRID_SIZE ** 2 - len(WALLS)

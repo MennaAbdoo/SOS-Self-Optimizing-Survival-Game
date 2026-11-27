@@ -41,8 +41,7 @@ def is_walkable(position):
     return is_inside_grid(position) and position not in WALLS
 
 def get_reachable_positions(start=START_POSITION):
-    """Find all reachable positions using BFS."""
-
+    """Find reachable positions without expanding terminal states."""
     if not is_walkable(start):
         raise ValueError("Invalid starting position.")
 
@@ -51,6 +50,10 @@ def get_reachable_positions(start=START_POSITION):
 
     while queue:
         row, col = queue.popleft()
+
+        # Do not expand terminal goal states
+        if (row, col) == GOAL_POSITION:
+            continue
 
         for dr, dc in ACTION_DELTAS.values():
             next_position = (row + dr, col + dc)
