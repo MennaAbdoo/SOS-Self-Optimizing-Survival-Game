@@ -130,3 +130,41 @@ Each evaluation episode must record:
 - Truncation must be distinguished from termination.
 - Rendering must be disabled during training and automated testing.
 - Interface changes require team agreement.
+
+## GridWorld Implementation Details
+
+**Environment class:** `GridWorldEnv`
+
+**Import:**
+
+```python
+from environment.gridworld import GridWorldEnv
+```
+
+**Initialization:**
+
+```python
+env = GridWorldEnv(render_mode=None)
+```
+
+### Environment Info Dictionary
+
+| Key | Description |
+|---|---|
+| `position` | Current robot position (row, col) |
+| `battery_mask` | Integer representing collected batteries |
+| `batteries_collected` | Number of collected batteries |
+| `step_count` | Number of attempted actions |
+| `cumulative_reward` | Total episode reward |
+| `hazard_encounters` | Number of hazard entries |
+| `success` | Whether the robot reached the goal |
+
+### Implementation Rules
+
+- Call `reset()` before starting an episode.
+- Reset the environment after termination or truncation.
+- Use the shared `transition(state, action)` function for MDP construction.
+- Goal states are absorbing with zero subsequent reward.
+- Wall states are excluded from valid transitions.
+- Use `render_mode=None` during training and evaluation.
+- Use `render_mode="human"` for visualization.
