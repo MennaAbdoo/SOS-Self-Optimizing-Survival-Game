@@ -436,4 +436,3 @@ Default values must come from `config.py`.
 - No parameter updates during evaluation.
 - Final evaluation must not be used for hyperparameter selection.
 
-The fixed deterministic environment may produce identical evaluation trajectories for a trained deterministic policy. This limitation must be reported.
