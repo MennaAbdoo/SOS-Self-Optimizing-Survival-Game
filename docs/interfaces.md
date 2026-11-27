@@ -254,3 +254,13 @@ done = terminated or truncated
 
 env.close()
 ```
+## Logging Conventions
+
+- Training logs must be returned as a list of dictionaries.
+- Progress and episode indices start at 1.
+- Episode rewards represent undiscounted cumulative rewards.
+- Training time is cumulative and measured in seconds.
+- Non-applicable metrics must be recorded as null.
+- Initialize the agent RNG once per independent run.
+- Final evaluation must not be used for hyperparameter selection.
+- Use one final experiment run per algorithm and seed to avoid overwriting result files.
