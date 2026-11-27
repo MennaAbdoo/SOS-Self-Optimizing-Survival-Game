@@ -100,3 +100,93 @@ Detailed interface contracts are defined in `docs/interfaces.md`.
 - All algorithms must use identical states, actions, rewards, and transition rules.
 - Rendering is disabled during training and performance measurements.
 - Environment changes require team agreement.
+
+## Environment Pseudocode
+
+### Reset Environment
+
+```text
+FUNCTION RESET:
+    position ← START_POSITION
+    battery_mask ← 0
+    step_count ← 0
+    cumulative_reward ← 0
+    hazard_encounters ← 0
+    terminated ← False
+    truncated ← False
+
+    state ← ENCODE(position, battery_mask)
+
+    RETURN state, info
+```
+
+### State Transition
+
+```text
+FUNCTION TRANSITION(state, action):
+    DECODE state into position and battery_mask
+    VALIDATE state and action
+
+    IF position is GOAL:
+        RETURN state, 0, True
+
+    next_position ← position + ACTION_DELTA[action]
+
+    IF next_position is outside grid OR is a wall:
+        RETURN state, -5, False
+
+    terminated ← False
+
+    IF next_position is GOAL:
+        reward ← +100
+        terminated ← True
+
+    ELSE IF next_position contains an uncollected battery:
+        UPDATE battery_mask
+        reward ← +15
+
+    ELSE IF next_position is a hazard:
+        reward ← -20
+
+    ELSE:
+        reward ← -1
+
+    next_state ← ENCODE(next_position, battery_mask)
+
+    RETURN next_state, reward, terminated
+```
+
+### Environment Step
+
+```text
+FUNCTION STEP(action):
+    REQUIRE an active episode
+
+    next_state, reward, terminated ← TRANSITION(state, action)
+
+    state ← next_state
+    step_count ← step_count + 1
+    cumulative_reward ← cumulative_reward + reward
+
+    IF reward = HAZARD_PENALTY:
+        hazard_encounters ← hazard_encounters + 1
+
+    truncated ← step_count >= MAX_STEPS AND NOT terminated
+
+    RETURN state, reward, terminated, truncated, info
+```
+
+### Episode Execution
+
+```text
+state, info ← RESET()
+
+WHILE NOT terminated AND NOT truncated:
+    action ← AGENT.SELECT_ACTION(state)
+
+    state, reward, terminated, truncated, info ← STEP(action)
+
+END WHILE
+```
+
+The same deterministic transition function is shared by the environment and the MDP construction to ensure consistent game dynamics across all algorithms.
