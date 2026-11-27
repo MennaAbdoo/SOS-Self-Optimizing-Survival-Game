@@ -194,3 +194,63 @@ env = GridWorldEnv(render_mode=None)
 - Exploration parameters.
 - Convergence thresholds.
 - Algorithm-specific training parameters.
+
+## Model Saving and Result Naming
+
+Algorithm identifiers:
+
+- `policy_iteration`
+- `q_learning`
+- `reinforce`
+
+Use the following naming conventions:
+
+| Output | Filename |
+|---|---|
+| Model | `{algorithm}_seed{seed}.npz` |
+| Training log | `{algorithm}_seed{seed}_training.csv` |
+| Evaluation log | `{algorithm}_seed{seed}_evaluation.csv` |
+| Metrics | `{algorithm}_metrics.csv` |
+| Figure | `{algorithm}_{metric}.png` |
+
+Models must contain the parameters required to reproduce the learned policy. Loading a model must restore its action-selection behavior.
+
+## Reproducibility
+
+- Use the experiment seeds defined in `config.py`.
+- Initialize each agent's random-number generator using the assigned seed.
+- Record the seed and hyperparameters for every experiment.
+- Use separate evaluation episodes without updating learned parameters.
+
+## Termination and Truncation
+
+- Stop episode execution when `terminated or truncated` is true.
+- Do not bootstrap future values after true termination.
+- For TD learning, bootstrap after external time-limit truncation.
+- Policy Iteration models the underlying MDP without the external time limit.
+- REINFORCE computes returns from the collected episode trajectory.
+
+## Visualization Contract
+
+- Visualization is implemented separately in `environment/visualization.py`.
+- The renderer class is `GridWorldRenderer`.
+- The renderer exposes `render(env)` and `close()`.
+- Rendering must not modify environment state or learning parameters.
+- Training and performance evaluation must run without rendering.
+
+## Environment Usage Example
+
+```python
+from environment.gridworld import GridWorldEnv
+from config import RIGHT, SEED
+
+env = GridWorldEnv(render_mode=None)
+
+state, info = env.reset(seed=SEED)
+
+next_state, reward, terminated, truncated, info = env.step(RIGHT)
+
+done = terminated or truncated
+
+env.close()
+```
